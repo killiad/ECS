@@ -1,0 +1,142 @@
+[
+    {
+        "arguments": [
+            "g++",
+            "-c",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-std=c++17",
+            "-ggdb3",
+            "-Wall",
+            "-I",
+            "./include",
+            "-I",
+            "/usr/include/",
+            "-o",
+            "bin/src/game/RunGameLoop.o",
+            "src/game/RunGameLoop.cpp"
+        ],
+        "directory": "/home/killian/ECS",
+        "file": "src/game/RunGameLoop.cpp"
+    },
+    {
+        "arguments": [
+            "g++",
+            "-c",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-std=c++17",
+            "-ggdb3",
+            "-Wall",
+            "-I",
+            "./include",
+            "-I",
+            "/usr/include/",
+            "-o",
+            "bin/src/game/main.o",
+            "src/game/main.cpp"
+        ],
+        "directory": "/home/killian/ECS",
+        "file": "src/game/main.cpp"
+    },
+    {
+        "arguments": [
+            "g++",
+            "-c",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-std=c++17",
+            "-ggdb3",
+            "-Wall",
+            "-I",
+            "./include",
+            "-I",
+            "/usr/include/",
+            "-o",
+            "bin/src/game/RegisterComponents.o",
+            "src/game/RegisterComponents.cpp"
+        ],
+        "directory": "/home/killian/ECS",
+        "file": "src/game/RegisterComponents.cpp"
+    },
+    {
+        "arguments": [
+            "g++",
+            "-c",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-std=c++17",
+            "-ggdb3",
+            "-Wall",
+            "-I",
+            "./include",
+            "-I",
+            "/usr/include/",
+            "-o",
+            "bin/src/game/RegisterSystems.o",
+            "src/game/RegisterSystems.cpp"
+        ],
+        "directory": "/home/killian/ECS",
+        "file": "src/game/RegisterSystems.cpp"
+    },
+    {
+        "arguments": [
+            "g++",
+            "-c",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-std=c++17",
+            "-ggdb3",
+            "-Wall",
+            "-I",
+            "./include",
+            "-I",
+            "/usr/include/",
+            "-o",
+            "bin/src/core/Systems.o",
+            "src/core/Systems.cpp"
+        ],
+        "directory": "/home/killian/ECS",
+        "file": "src/core/Systems.cpp"
+    },
+    {
+        "arguments": [
+            "g++",
+            "-c",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-std=c++17",
+            "-ggdb3",
+            "-Wall",
+            "-I",
+            "./include",
+            "-I",
+            "/usr/include/",
+            "-o",
+            "bin/src/core/Vec2.o",
+            "src/core/Vec2.cpp"
+        ],
+        "directory": "/home/killian/ECS",
+        "file": "src/core/Vec2.cpp"
+    },
+    {
+        "arguments": [
+            "g++",
+            "-c",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "-std=c++17",
+            "-ggdb3",
+            "-Wall",
+            "-I",
+            "./include",
+            "-I",
+            "/usr/include/",
+            "-o",
+            "bin/src/core/EntityManager.o",
+            "src/core/EntityManager.cpp"
+        ],
+        "directory": "/home/killian/ECS",
+        "file": "src/core/EntityManager.cpp"
+    }
+]
