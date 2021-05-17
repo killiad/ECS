@@ -10,8 +10,20 @@
 
 //render components
 struct Drawable{
+    bool draw;
+};
+
+struct Image{
     std::string filename;
     SDL_Texture* texture = nullptr;
+    SDL_Rect source;
+    SDL_Rect dest;
+};
+
+struct Animation{
+    int num_frames;
+    int framerate;
+    bool loop;
 };
 
 //physics components
