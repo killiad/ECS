@@ -2,7 +2,7 @@
 #include "../core/Components.h"
 
 void RegisterComponents(){
-    //Render components
+    //Render Components
     Coordinator::GetInstance().RegisterComponent<Drawable>();
     Coordinator::GetInstance().RegisterComponent<Image>();
     Coordinator::GetInstance().RegisterComponent<Animation>();
@@ -11,4 +11,8 @@ void RegisterComponents(){
     Coordinator::GetInstance().RegisterComponent<Transform>();
     Coordinator::GetInstance().RegisterComponent<RigidBody>();
     Coordinator::GetInstance().RegisterComponent<Gravity>();
+
+    //Input Components
+    Coordinator::GetInstance().RegisterComponent<Input>();
+    Coordinator::GetInstance().RegisterComponent<Movement>();
 }

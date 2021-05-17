@@ -45,4 +45,14 @@ struct Gravity
     Vec2 force;
 };
 
+//input components
+struct Input{
+    bool keys[284];
+};
+
+struct Movement{
+    double max_speed;
+    double acceleration;
+};
+
 #endif

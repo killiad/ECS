@@ -21,11 +21,25 @@ class RenderObjSystem : public RenderSystem{
         void Update();
 };
 
+//physics systems
 class PhysicsSystem : public System{
     private:
         double lastUpdate;
     public:
         PhysicsSystem() = default;
+        void Update();
+};
+
+//input systems
+class InputSystem : public System{
+    public:
+        InputSystem() = default;
+        bool Update();
+};
+
+class MovementSystem : public System{
+    public:
+        MovementSystem() = default;
         void Update();
 };
 

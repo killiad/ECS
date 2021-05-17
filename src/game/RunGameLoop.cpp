@@ -45,9 +45,25 @@ void RunGameLoop(){
     Coordinator::GetInstance().SetSystemComponentBitset<PhysicsSystem>(components);
     components.reset();
 
+    //create input system
+    auto inputSystem = Coordinator::GetInstance().RegisterSystem<InputSystem>();
+    components.set(Coordinator::GetInstance().GetComponentType<Input>());
+    Coordinator::GetInstance().SetSystemComponentBitset<InputSystem>(components);
+    components.reset();
+
+    //create movement system
+    auto movementSystem = Coordinator::GetInstance().RegisterSystem<MovementSystem>();
+    components.set(Coordinator::GetInstance().GetComponentType<Input>());
+    components.set(Coordinator::GetInstance().GetComponentType<RigidBody>());
+    components.set(Coordinator::GetInstance().GetComponentType<Transform>());
+    components.set(Coordinator::GetInstance().GetComponentType<Gravity>());
+    components.set(Coordinator::GetInstance().GetComponentType<Movement>());
+    Coordinator::GetInstance().SetSystemComponentBitset<InputSystem>(components);
+    components.reset();
+
 
     Entity entity = Coordinator::GetInstance().CreateEntity();
-    Coordinator::GetInstance().AddComponent(entity, Gravity{Vec2(0,100)});
+    Coordinator::GetInstance().AddComponent(entity, Gravity{Vec2::ZERO});
     Coordinator::GetInstance().AddComponent(entity, RigidBody{
             .velocity = Vec2::ZERO,
             .acceleration = Vec2::ZERO
@@ -63,12 +79,18 @@ void RunGameLoop(){
             .source = SDL_Rect{0,0,32,32},
             .dest = SDL_Rect{100,100,100,100}
             });
+    Coordinator::GetInstance().AddComponent(entity, Input{});
+    Coordinator::GetInstance().AddComponent(entity, Movement{.max_speed = 100, .acceleration = 50});
     renderObjSystem->Blit(entity);
 
     while(true){
         auto start_time = SDL_GetTicks();
         SDL_RenderClear(renderer);
 
+        if(!inputSystem->Update()){
+            break;
+        }
+        movementSystem->Update();
         physicsSystem->Update();
         renderObjSystem->Update();
         auto frame_duration = SDL_GetTicks() - start_time;
