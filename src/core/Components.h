@@ -7,10 +7,13 @@
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_image.h>
 #include "Vec2.h"
+#include "ECS.h"
 
 //render components
 struct Drawable{
     bool draw;
+    unsigned int layer;
+    double parallax = 1;
 };
 
 struct Image{
@@ -18,6 +21,11 @@ struct Image{
     SDL_Texture* texture = nullptr;
     SDL_Rect source;
     SDL_Rect dest;
+};
+
+struct Camera{
+    Entity follow_entity;
+    Vec2 fixed_pos;
 };
 
 struct Animation{
@@ -30,7 +38,7 @@ struct Animation{
 struct Transform
 {
     Vec2 position;
-    double scale;
+    Vec2 scale;
     double rotation;
 };
 

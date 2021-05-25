@@ -2,6 +2,7 @@
 #define VEC_2_H
 
 #include <cmath>
+#include <iostream>
 
 //2 dimensional double vector
 class Vec2{
@@ -22,6 +23,7 @@ class Vec2{
         //scalar vector multiplication
         friend Vec2 operator*(const int&, const Vec2&);
         friend Vec2 operator*(const double&, const Vec2&);
+        friend std::ostream& operator<<(std::ostream& os, const Vec2&);
 
         Vec2(double x = 0, double y = 0);
 

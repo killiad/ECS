@@ -12,13 +12,12 @@ class SystemManager;
 class Coordinator{
 
     private:
-        Coordinator() {};
+        Coordinator() {}
         std::unique_ptr<EntityManager> entityManager;
         std::unique_ptr<ComponentManager> componentManager;
         std::unique_ptr<SystemManager> systemManager;
 
     public:
-
         static const int FPS = 60;
         static const int FRAME_DURATION = 1000/FPS;
         static const int SCREEN_WIDTH = 640;

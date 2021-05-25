@@ -5,6 +5,7 @@ void RegisterComponents(){
     //Render Components
     Coordinator::GetInstance().RegisterComponent<Drawable>();
     Coordinator::GetInstance().RegisterComponent<Image>();
+    Coordinator::GetInstance().RegisterComponent<Camera>();
     Coordinator::GetInstance().RegisterComponent<Animation>();
 
     //Physics Components

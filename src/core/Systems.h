@@ -3,22 +3,18 @@
 
 #include "System.h"
 #include "Coordinator.h"
+#include <map>
 
-//Render systems
-//Note: RenderSystem is inherited from only
+//Render system
 class RenderSystem : public System{
     public:
+        RenderSystem();
+        void Update();
         void Blit(Entity entity);
         inline void setRenderer(SDL_Renderer* rend) {renderer = rend;};
-    protected:
-        RenderSystem() = default;
+    private:
         SDL_Renderer* renderer;
-};
-
-class RenderObjSystem : public RenderSystem{
-    public:
-        RenderObjSystem() = default; 
-        void Update();
+        Entity camera;
 };
 
 //physics systems

@@ -4,6 +4,11 @@
 #include <iostream>
 #include <SDL2/SDL_ttf.h>
 
+std::shared_ptr<RenderSystem> RegisterRenderSystem(SDL_Renderer* renderer);
+std::shared_ptr<PhysicsSystem> RegisterPhysicsSystem();
+std::shared_ptr<InputSystem> RegisterInputSystem();
+std::shared_ptr<MovementSystem> RegisterMovementSystem();
+
 void RunGameLoop(){
 
     const int SCREEN_WIDTH = 640;
@@ -26,41 +31,10 @@ void RunGameLoop(){
     SDL_Renderer* renderer = SDL_CreateRenderer(window,-1,0);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
-    ComponentBitset components;
-
-    //create render objects system
-    auto renderObjSystem = Coordinator::GetInstance().RegisterSystem<RenderObjSystem>();
-    renderObjSystem->setRenderer(renderer);
-    components.set(Coordinator::GetInstance().GetComponentType<Drawable>());
-    components.set(Coordinator::GetInstance().GetComponentType<Image>());
-    components.set(Coordinator::GetInstance().GetComponentType<Transform>());
-    Coordinator::GetInstance().SetSystemComponentBitset<RenderObjSystem>(components);
-    components.reset();
-
-    //create physics system
-    auto physicsSystem = Coordinator::GetInstance().RegisterSystem<PhysicsSystem>();
-    components.set(Coordinator::GetInstance().GetComponentType<Transform>());
-    components.set(Coordinator::GetInstance().GetComponentType<RigidBody>());
-    components.set(Coordinator::GetInstance().GetComponentType<Gravity>());
-    Coordinator::GetInstance().SetSystemComponentBitset<PhysicsSystem>(components);
-    components.reset();
-
-    //create input system
-    auto inputSystem = Coordinator::GetInstance().RegisterSystem<InputSystem>();
-    components.set(Coordinator::GetInstance().GetComponentType<Input>());
-    Coordinator::GetInstance().SetSystemComponentBitset<InputSystem>(components);
-    components.reset();
-
-    //create movement system
-    auto movementSystem = Coordinator::GetInstance().RegisterSystem<MovementSystem>();
-    components.set(Coordinator::GetInstance().GetComponentType<Input>());
-    components.set(Coordinator::GetInstance().GetComponentType<RigidBody>());
-    components.set(Coordinator::GetInstance().GetComponentType<Transform>());
-    components.set(Coordinator::GetInstance().GetComponentType<Gravity>());
-    components.set(Coordinator::GetInstance().GetComponentType<Movement>());
-    Coordinator::GetInstance().SetSystemComponentBitset<InputSystem>(components);
-    components.reset();
-
+    auto renderSystem = RegisterRenderSystem(renderer);
+    auto physicsSystem = RegisterPhysicsSystem();
+    auto inputSystem = RegisterInputSystem(); 
+    auto movementSystem = RegisterMovementSystem();
 
     Entity entity = Coordinator::GetInstance().CreateEntity();
     Coordinator::GetInstance().AddComponent(entity, Gravity{Vec2::ZERO});
@@ -73,7 +47,10 @@ void RunGameLoop(){
             .scale = 50,
             .rotation = 0
             });
-    Coordinator::GetInstance().AddComponent(entity, Drawable{.draw = true});
+    Coordinator::GetInstance().AddComponent(entity, Drawable{
+            .draw = true,
+            .layer = 2
+            });
     Coordinator::GetInstance().AddComponent(entity, Image{
             .filename = "src/game/GFX/Slime.png",
             .source = SDL_Rect{0,0,32,32},
@@ -81,7 +58,7 @@ void RunGameLoop(){
             });
     Coordinator::GetInstance().AddComponent(entity, Input{});
     Coordinator::GetInstance().AddComponent(entity, Movement{.max_speed = 100, .acceleration = 50});
-    renderObjSystem->Blit(entity);
+    renderSystem->Blit(entity);
 
     while(true){
         auto start_time = SDL_GetTicks();
@@ -92,7 +69,7 @@ void RunGameLoop(){
         }
         movementSystem->Update();
         physicsSystem->Update();
-        renderObjSystem->Update();
+        renderSystem->Update();
         auto frame_duration = SDL_GetTicks() - start_time;
 
         SDL_RenderPresent(renderer);

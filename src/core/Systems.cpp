@@ -1,6 +1,14 @@
 #include "Systems.h"
 #include <iostream>
 
+RenderSystem::RenderSystem() : renderer(nullptr), camera(Coordinator::GetInstance().CreateEntity()){
+    Coordinator::GetInstance().AddComponent(camera, Transform{
+            .position = Vec2::ZERO,
+            .scale = Vec2(640,480),
+            .rotation = 0
+            });
+}
+
 void RenderSystem::Blit(Entity entity){
     
     auto& image = Coordinator::GetInstance().GetComponent<Image>(entity);
@@ -9,16 +17,31 @@ void RenderSystem::Blit(Entity entity){
     SDL_FreeSurface(surface);
 }
 
-void RenderObjSystem::Update(){
+
+void RenderSystem::Update(){
+    std::map<unsigned int, std::vector<Entity> > entity_layers;
     for(auto const& entity : entities){
         auto& drawable = Coordinator::GetInstance().GetComponent<Drawable>(entity);
-        auto& image = Coordinator::GetInstance().GetComponent<Image>(entity);
-        auto& transform = Coordinator::GetInstance().GetComponent<Transform>(entity);
+        entity_layers[drawable.layer].push_back(entity);
+    }
 
-        image.dest.x = transform.position.x();
-        image.dest.y = transform.position.y();
-        if(drawable.draw){
-            SDL_RenderCopy(renderer, image.texture, &image.source, &image.dest);
+    auto& camera_pos = Coordinator::GetInstance().GetComponent<Transform>(camera);
+    SDL_Rect dest;
+    for(auto entity_layer : entity_layers){
+        for(auto const& entity : entity_layer.second){
+            auto& drawable = Coordinator::GetInstance().GetComponent<Drawable>(entity);
+            auto& image = Coordinator::GetInstance().GetComponent<Image>(entity);
+            auto& transform = Coordinator::GetInstance().GetComponent<Transform>(entity);
+
+            image.dest.x = transform.position.x();
+            image.dest.y = transform.position.y();
+            dest.x = image.dest.x - drawable.parallax * camera_pos.position.x();
+            dest.y = image.dest.y - drawable.parallax * camera_pos.position.y();
+            dest.w = transform.scale.x() * image.dest.w;
+            dest.h = transform.scale.y() * image.dest.h;
+            if(drawable.draw){
+                SDL_RenderCopy(renderer, image.texture, &image.source, &dest);
+            }
         }
     }
 }
@@ -67,32 +90,20 @@ void MovementSystem::Update(){
         auto& input = Coordinator::GetInstance().GetComponent<Input>(entity);
         auto& movement = Coordinator::GetInstance().GetComponent<Movement>(entity);
 
-        Vec2 acc = Vec2::ZERO;
+        Vec2 vel = Vec2::ZERO;
         if(input.keys[SDL_SCANCODE_W]){
-            acc = acc + Vec2::UP;
+            vel = vel + Vec2::UP;
         }
         if(input.keys[SDL_SCANCODE_A]){
-            acc = acc + Vec2::LEFT;
+            vel = vel + Vec2::LEFT;
         }
         if(input.keys[SDL_SCANCODE_S]){
-            acc = acc + Vec2::DOWN;
+            vel = vel + Vec2::DOWN;
         }
         if(input.keys[SDL_SCANCODE_D]){
-            acc = acc + Vec2::RIGHT;
+            vel = vel + Vec2::RIGHT;
         }
-
-        if(acc.getLength() > 0){
-            if(rigidBody.velocity.getLength() < movement.max_speed){
-                acc = movement.acceleration * acc.getUnitVector();
-                rigidBody.acceleration = acc;
-            }
-            else{
-                rigidBody.acceleration = 0;
-            }
-        }
-        else{
-            rigidBody.acceleration = Vec2::ZERO;
-            rigidBody.velocity = Vec2::ZERO;
-        }
+        
+        rigidBody.velocity = movement.max_speed * vel.getUnitVector();
     }
 }

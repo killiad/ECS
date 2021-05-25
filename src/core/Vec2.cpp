@@ -36,3 +36,8 @@ Vec2 operator*(const int& c, const Vec2& v){
 Vec2 operator*(const double& c, const Vec2& v){
     return Vec2(c*v.x(), c*v.y());
 }
+
+std::ostream& operator<<(std::ostream& os, const Vec2& vec){
+    os << vec.x() << ", " << vec.y();
+    return os;
+}
