@@ -44,7 +44,7 @@ void RunGameLoop(){
             });
     Coordinator::GetInstance().AddComponent(entity, Transform{
             .position = Vec2(100,100),
-            .scale = 50,
+            .scale = Vec2(1,1),
             .rotation = 0
             });
     Coordinator::GetInstance().AddComponent(entity, Drawable{
@@ -59,6 +59,26 @@ void RunGameLoop(){
     Coordinator::GetInstance().AddComponent(entity, Input{});
     Coordinator::GetInstance().AddComponent(entity, Movement{.max_speed = 100, .acceleration = 50});
     renderSystem->Blit(entity);
+    renderSystem->SetCameraTarget(entity);
+
+    Entity grass = Coordinator::GetInstance().CreateEntity();
+    Coordinator::GetInstance().AddComponent(grass, Transform{
+            .position = Vec2::ZERO,
+            .scale = Vec2(1,1),
+            .rotation = 0
+            });
+    Coordinator::GetInstance().AddComponent(grass, Drawable{
+            .draw = true,
+            .layer = 1,
+            .parallax = .85,
+            .wrap_h = true
+            });
+    Coordinator::GetInstance().AddComponent(grass, Image{
+            .filename = "src/game/GFX/grass.png",
+            .source = SDL_Rect{0,0,1024,1024},
+            .dest = SDL_Rect{0,0,1024,1024}
+            });
+    renderSystem->Blit(grass);
 
     while(true){
         auto start_time = SDL_GetTicks();

@@ -14,6 +14,7 @@ struct Drawable{
     bool draw;
     unsigned int layer;
     double parallax = 1;
+    bool wrap_h = false;
 };
 
 struct Image{
@@ -21,11 +22,6 @@ struct Image{
     SDL_Texture* texture = nullptr;
     SDL_Rect source;
     SDL_Rect dest;
-};
-
-struct Camera{
-    Entity follow_entity;
-    Vec2 fixed_pos;
 };
 
 struct Animation{

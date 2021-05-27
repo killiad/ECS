@@ -11,10 +11,13 @@ class RenderSystem : public System{
         RenderSystem();
         void Update();
         void Blit(Entity entity);
+        void SetCameraTarget(Entity& entity);
         inline void setRenderer(SDL_Renderer* rend) {renderer = rend;};
     private:
         SDL_Renderer* renderer;
         Entity camera;
+        Entity* camera_target;
+        Vec2 camera_offset;
 };
 
 //physics systems

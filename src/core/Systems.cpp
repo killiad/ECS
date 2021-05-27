@@ -1,10 +1,11 @@
 #include "Systems.h"
 #include <iostream>
 
-RenderSystem::RenderSystem() : renderer(nullptr), camera(Coordinator::GetInstance().CreateEntity()){
+RenderSystem::RenderSystem() : renderer(nullptr), camera(Coordinator::GetInstance().CreateEntity()),
+    camera_target(nullptr){
     Coordinator::GetInstance().AddComponent(camera, Transform{
             .position = Vec2::ZERO,
-            .scale = Vec2(640,480),
+            .scale = Vec2(Coordinator::GetInstance().SCREEN_WIDTH,Coordinator::GetInstance().SCREEN_HEIGHT),
             .rotation = 0
             });
 }
@@ -17,16 +18,25 @@ void RenderSystem::Blit(Entity entity){
     SDL_FreeSurface(surface);
 }
 
+void RenderSystem::SetCameraTarget(Entity& entity){
+    camera_target = &entity;
+    auto& transform = Coordinator::GetInstance().GetComponent<Transform>(entity);
+    camera_offset = transform.position;
+}
 
 void RenderSystem::Update(){
+    auto& camera_pos = Coordinator::GetInstance().GetComponent<Transform>(camera);
+    SDL_Rect dest;
     std::map<unsigned int, std::vector<Entity> > entity_layers;
+
+    if(camera_target){
+        auto& target_transform = Coordinator::GetInstance().GetComponent<Transform>(*camera_target);
+        camera_pos.position = target_transform.position - camera_offset;
+    }
     for(auto const& entity : entities){
         auto& drawable = Coordinator::GetInstance().GetComponent<Drawable>(entity);
         entity_layers[drawable.layer].push_back(entity);
     }
-
-    auto& camera_pos = Coordinator::GetInstance().GetComponent<Transform>(camera);
-    SDL_Rect dest;
     for(auto entity_layer : entity_layers){
         for(auto const& entity : entity_layer.second){
             auto& drawable = Coordinator::GetInstance().GetComponent<Drawable>(entity);
@@ -41,6 +51,16 @@ void RenderSystem::Update(){
             dest.h = transform.scale.y() * image.dest.h;
             if(drawable.draw){
                 SDL_RenderCopy(renderer, image.texture, &image.source, &dest);
+                if(drawable.wrap_h){
+                    if(dest.x > 0){
+                        transform.position = transform.position - Vec2(dest.w, 0);
+                    }
+                    else if(dest.x + 2*dest.w < Coordinator::SCREEN_WIDTH){
+                        transform.position = transform.position + Vec2(dest.w, 0);
+                    }
+                    dest.x += dest.w;
+                    SDL_RenderCopy(renderer, image.texture, &image.source, &dest);
+                }
             }
         }
     }
